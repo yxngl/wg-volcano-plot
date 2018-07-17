@@ -1,11 +1,13 @@
 ## Introduction
 
-A Vue component of volcano plot based on D3.
+A [Vue](https://vuejs.org/) component of volcano plot based on [D3](https://d3js.org/).
 
 A wrapper with Vue bundled for direct use in browser is available at [dist/wg-volcano-plot.min.js](dist/wg-volcano-plot.min.js), which exposes a global function of WgVolcanoPlot with two parameters:
 
 -   `containerId` **string** DOM ID that the plot will be attached to
 -   `options` **Object** options that are passed on, see below
+
+[Bulma](https://bulma.io/) classes are used in toolbox and can be styled with custom themes.
 
 ## API
 
