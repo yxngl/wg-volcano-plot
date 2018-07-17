@@ -63,6 +63,37 @@ import download from 'downloadjs';
 const LABEL_SIZE = 0.7;
 const STROKE_WIDTH = 1;
 
+/**
+ * A component of volcano plot with toolbox of utility functions
+ * @param {string} [domId="wg-volcano-container"] - ID of the plot container
+ * @param {Object} [dimensions] - Dimensions of the plot
+ * @param {number} [dimensions.width=960] - Width of the plot
+ * @param {number} [dimensions.height=500] - Height of the plot
+ * @param {Object} [margins] - Margins of the plot
+ * @param {number} [margins.top=60] - Top margin of the plot
+ * @param {number} [margins.bottom=40] - Bottom margin of the plot
+ * @param {number} [margins.left=30] - Left margin of the plot
+ * @param {number} [margins.right=30] - Right margin of the plot
+ * @param {Object[]} dataPoints - Array of input data objects
+ * @param {Object} [dataPoints.attributes] - Attributes to apply on each data point (SVG circle), which can be used for style customization.
+ * @param {Object} [dataPoints.options] - Options for each data point.
+ * @param {boolean} [dataPoints.options.showLabel] - Options to control if label is shown for each data point.
+ * @param {boolean} [dataPoints.options.showTooltip] - Options to control if tooltip is shown for each data point.
+ * @param {string} x - Key of the input data to plot on X axis
+ * @param {string} y - Key of the input data to plot on Y axis
+ * @param {string} [xlabel=x] - Label on the X axis
+ * @param {string} [ylabel=y] - Label on the Y axis
+ * @param {string|string[]} [labelTypes=null] - Keys of the data that can be selected to label points. Single value or first of the array will be used on initiation. Null will disable it.
+ * @param {function} [xTransform] - Transformation to perform on X values. Defaults to log2 while forcing 0 to 1. Null equals indentity transformation.
+ * @param {function} [yTransform] - Transformation to perform on Y values. Defaults to -log10 while first converting 0 to a small number. Null equals indentity transformation.
+ * @param {number|string} [radius=4] - A fixed number of key of data to be used as the radius of data points.
+ * @param {string} [color="black"] - A color or key of data to be used as the uniform or gradient color of data points.
+ * @param {boolean} [showAllTooltips=false] - Whether to show tooltips for all data points.
+ * @param {String[]} [tooltipContent] - The keys of data to appear in tooltips.
+ * @param {boolean} [showAllLabels=false] - Whether to show labels for all data points.
+ * @param {boolean} [autoPlaceLabels=false] - Whether to run a few rounds of simple simulation to place labels on initiation.
+ * @param {boolean} [showToolbox=true] - Whether to show utility toolbox.
+ */
 export default {
   props: {
     domId: {

@@ -5,6 +5,7 @@
   "main": "dist/wg-volcano-plot.umd.js",
   "scripts": {
     "build": "npx webpack --mode=production",
+    "doc": "npx documentation readme src/WgVolcanoPlot.vue --section=API --markdown-toc=false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,16 +27,17 @@
     "core-js": "^2.5.7",
     "d3": "^5.5.0",
     "downloadjs": "^1.4.7",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vue-template-compiler": "^2.5.16"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "css-loader": "^1.0.0",
+    "documentation": "^8.0.1",
     "style-loader": "^0.21.0",
     "vue-loader": "^15.2.4",
-    "vue-template-compiler": "^2.5.16",
     "webpack": "^4.16.0",
     "webpack-cli": "^3.0.8",
     "webpack-merge": "^4.1.3"
