@@ -333,7 +333,7 @@ export default {
       const createTooltipContent = d => {
         let content = "";
         if (this.tooltipContent) {
-          for (const key of this.tooltipContent) {
+          for (let key in Object.keys(this.tooltipContent)) {
             content += `${key}: ${d[key]}<br>`;
           }
           return content;
