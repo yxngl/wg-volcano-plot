@@ -171,7 +171,7 @@ export default {
   },
   data() {
     return {
-      labelType: Array.isArray(this.labelTypes) ? this.labelTypes[0] : this.labelTypes,
+      labelType: null,
       linkShown: false,
       zoomEnabled: false,
       downloadType: "png"
@@ -573,7 +573,7 @@ export default {
     changeLabel() {
       if (this.labelType === null) return;
       this.svg.selectAll(".dot-label")
-        .html(d => d[this.labelType])
+        .text(d => d[this.labelType])
         .call(this.wrap, 120)
       if (this.linkShown) {
         this.removeLinkLine();
@@ -633,10 +633,12 @@ export default {
       this.plotVolcano();
     },
     labelType: function(newlt, oldlt) {
+      if (oldlt === null) return;
       this.changeLabel()
     }
   },
   created: function() {
+    this.labelType = Array.isArray(this.labelTypes) ? this.labelTypes[0] : this.labelTypes;
     //declare no n-reactive variables here
     this.svg = null;  //SVG container: canvas + margins. Legend plots on margin
     this.canvas = null; //Plotting area: Axes, content
