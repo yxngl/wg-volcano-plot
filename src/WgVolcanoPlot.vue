@@ -37,7 +37,7 @@
   </template>
   <div class="wg-volcano-tool wg-volcano-zoom">
     <div class="field">
-      <input :id="domId + '-zoom'" type="checkbox" class="switch" @click="handleZoom"><label :for="domId + '-zoom'">Pan & Zoom</label>
+      <input :id="domId + '-zoom'" type="checkbox" class="switch" :checked="zoomEnabled" @click="handleZoom"><label :for="domId + '-zoom'">Pan & Zoom</label>
     </div>
   </div>
 </div>
