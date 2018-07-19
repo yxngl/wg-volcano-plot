@@ -1,10 +1,11 @@
 {
   "name": "wg-volcano-plot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Vue component and wrapped library of volcano (scatter) plot emphasized on interactivity",
   "main": "dist/wg-volcano-plot.umd.js",
   "scripts": {
     "build": "npx webpack --mode=production",
+    "build:dev": "npx webpack",
     "doc": "npx documentation readme src/WgVolcanoPlot.vue --section=API --markdown-toc=false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

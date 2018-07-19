@@ -76,11 +76,11 @@ const STROKE_WIDTH = 1;
  * @param {number} [margins.bottom=40] - Bottom margin of the plot
  * @param {number} [margins.left=30] - Left margin of the plot
  * @param {number} [margins.right=30] - Right margin of the plot
- * @param {Object[]} dataPoints - Array of input data objects
- * @param {Object} [dataPoints.attributes] - Attributes to apply on each data point (SVG circle), which can be used for style customization.
- * @param {Object} [dataPoints.options] - Options for each data point.
- * @param {boolean} [dataPoints.options.showLabel] - Options to control if label is shown for each data point.
- * @param {boolean} [dataPoints.options.showTooltip] - Options to control if tooltip is shown for each data point.
+ * @param {Object[]} data - Array of input data objects
+ * @param {Object} [data.attributes] - Attributes to apply on each data point (SVG circle), which can be used for style customization.
+ * @param {Object} [data.options] - Options for each data point.
+ * @param {boolean} [data.options.showLabel] - Options to control if label is shown for each data point.
+ * @param {boolean} [data.options.showTooltip] - Options to control if tooltip is shown for each data point.
  * @param {string} x - Key of the input data to plot on X axis
  * @param {string} y - Key of the input data to plot on Y axis
  * @param {string} [xlabel=x] - Label on the X axis
@@ -110,7 +110,7 @@ export default {
       type: Object,
       default: function() { return { top: 60, right: 30, bottom: 40, left: 30 } }
     },
-    dataPoints: {
+    data: {
       type: Array,
       required: true
     },
@@ -191,10 +191,10 @@ export default {
       let yTransform;
       if(this.yTransform === null) yTransform = d => d;
       if (typeof this.yTransform === "undefined") {
-        const nonzeroMin = Math.min(...this.dataPoints.map(d => d[this.y]).filter(d => d!==0))
+        const nonzeroMin = Math.min(...this.data.map(d => d[this.y]).filter(d => d!==0))
         yTransform = function(y) { return -Math.log10(y === 0 ? Math.min(0.0000001, nonzeroMin / 10) : y) }
       }
-      this.dataPoints.forEach(d => {
+      this.data.forEach(d => {
         processed.push(
           Object.assign({}, d,
             {
@@ -629,7 +629,7 @@ export default {
   watch: {
     //use watch not updated event,
     //as plot is managed by D3 and data is not directly rendered in template
-    dataPoints: function() {
+    data: function() {
       this.plotVolcano();
     },
     labelType: function(newlt, oldlt) {

@@ -28,11 +28,11 @@ A component of volcano plot with toolbox of utility functions
     -   `margins.bottom` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Bottom margin of the plot (optional, default `40`)
     -   `margins.left` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Left margin of the plot (optional, default `30`)
     -   `margins.right` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Right margin of the plot (optional, default `30`)
--   `dataPoints` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** Array of input data objects
-    -   `dataPoints.attributes` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Attributes to apply on each data point (SVG circle), which can be used for style customization.
-    -   `dataPoints.options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Options for each data point.
-        -   `dataPoints.options.showLabel` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Options to control if label is shown for each data point.
-        -   `dataPoints.options.showTooltip` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Options to control if tooltip is shown for each data point.
+-   `data` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** Array of input data objects
+    -   `data.attributes` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Attributes to apply on each data point (SVG circle), which can be used for style customization.
+    -   `data.options` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Options for each data point.
+        -   `data.options.showLabel` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Options to control if label is shown for each data point.
+        -   `data.options.showTooltip` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Options to control if tooltip is shown for each data point.
 -   `x` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Key of the input data to plot on X axis
 -   `y` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Key of the input data to plot on Y axis
 -   `xlabel` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Label on the X axis (optional, default `x`)
