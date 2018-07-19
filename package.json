@@ -8,6 +8,9 @@
     "doc": "npx documentation readme src/WgVolcanoPlot.vue --section=API --markdown-toc=false",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "babel": {
+    "presets": ["env"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yxngl/wg-volcano-plot.git"
