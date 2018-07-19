@@ -48,6 +48,8 @@
 
 <script>
 import 'core-js/fn/object/assign';
+import 'core-js/fn/math/log10';
+import 'core-js/fn/math/log2';
 import {scaleLinear, scaleSequential} from 'd3-scale';
 import {axisBottom, axisLeft} from 'd3-axis';
 import {select, event} from 'd3-selection';
