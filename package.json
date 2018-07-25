@@ -10,15 +10,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "babel": {
-    "presets": ["env"]
+    "presets": [
+      "env"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yxngl/wg-volcano-plot.git"
   },
   "keywords": [
-    "vue;",
-    "d3;",
+    "vue",
+    "d3",
     "visualization"
   ],
   "author": "Yuxing Liao",
@@ -43,7 +45,7 @@
     "style-loader": "^0.21.0",
     "vue-loader": "^15.2.4",
     "webpack": "^4.16.0",
-    "webpack-cli": "^3.0.8",
+    "webpack-cli": "^3.1.0",
     "webpack-merge": "^4.1.3"
   }
 }
