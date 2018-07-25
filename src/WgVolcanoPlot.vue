@@ -81,6 +81,7 @@ const STROKE_WIDTH = 1;
  * @param {Object} [data.options] - Options for each data point.
  * @param {boolean} [data.options.showLabel] - Options to control if label is shown for each data point.
  * @param {boolean} [data.options.showTooltip] - Options to control if tooltip is shown for each data point.
+ * @param {function} [data.options.callback] - A callback function to run when the data point is clicked, which is passed the current datum (d), the current index (i), and the current group (nodes) as specified by D3.
  * @param {string} x - Key of the input data to plot on X axis
  * @param {string} y - Key of the input data to plot on Y axis
  * @param {string} [xlabel=x] - Label on the X axis
@@ -319,14 +320,19 @@ export default {
                   g[i].setAttribute(key, d.attributes[key]);
                 }
               }
+              const sel = select(g[i]);
               if (this.showAllTooltips) {
-                  select(g[i]).on("mouseenter", showTooltip)
-                  select(g[i]).on("mouseleave", hideTooltip)
+                  sel.on("mouseenter", showTooltip);
+                  sel.on("mouseleave", hideTooltip);
               }
               if (d.hasOwnProperty("options") && typeof d.options === 'object' && d.options.constructor === Object) {
                 if (!this.showAllTooltips && d.options.hasOwnProperty("showTooltip") && d.options.showTooltip) {
-                  select(g[i]).on("mouseenter", showTooltip)
-                  select(g[i]).on("mouseleave", hideTooltip)
+                  sel.on("mouseenter", showTooltip);
+                  sel.on("mouseleave", hideTooltip);
+                }
+                if (d.options.hasOwnProperty("callback") && typeof d.options.callback === "function") {
+                  sel.on("click", d.options.callback);
+                  sel.classed("has-pointer", true);
                 }
               }
             })
@@ -426,7 +432,7 @@ export default {
         .attr("y", d => d.y)
         .enter()
           .append("text")
-          .attr("class", "dot-label")
+          .attr("class", "dot-label has-pointer")
           .attr("text-anchor", "middle")
           .attr("font-size", LABEL_SIZE + "rem")
           .text(d => d[this.labelType])
@@ -657,7 +663,7 @@ export default {
 </script>
 
 <style scoped>
-.wg-volcano-container >>> .dot-label {
+.wg-volcano-container >>> .has-pointer {
   cursor: pointer;
 }
 .wg-volcano-toolbox {
