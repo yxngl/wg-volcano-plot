@@ -341,7 +341,7 @@ export default {
       const createTooltipContent = d => {
         let content = "";
         if (this.tooltipContent) {
-          this.tooltipContent.forEach(key => content += `${key}: ${d[key]}<br>`);
+          this.tooltipContent.forEach(key => content += `${key}: ${this.formatNumber(d[key])}<br>`);
           return content;
         }
 
@@ -352,12 +352,12 @@ export default {
             }
           });
         }
-        content += `${this.x}: ${d[this.x]}<br>`;
-        content += `${this.y}: ${d[this.y]}<br>`;
+        content += `${this.x}: ${formatNumber(d[this.x])}<br>`;
+        content += `${this.y}: ${formatNumber(d[this.y])}<br>`;
         const excludeList = [this.x, this.y, "x", "y", "options", "attributes", "r"].concat(this.labelTypes);
         for (let key in d) {
           if (excludeList.indexOf(key) === -1) {
-            content += `${key}: ${d[key]}<br>`;
+            content += `${key}: ${formatNumber(d[key])}<br>`;
           }
         }
         return content;
@@ -611,6 +611,14 @@ export default {
         .on("zoom", zoomed);
       this.svg.call(zm);
       this.zoomEnabled = true;
+    },
+    formatNumber(val) {
+      if (typeof val !== "number") return val;
+      if (val.toString().length > 5) {
+        return val.toPrecision(5);
+      } else {
+        return val;
+      }
     },
     download() {
       const width = this.dimensions.width + this.margins.left + this.margins.right;
