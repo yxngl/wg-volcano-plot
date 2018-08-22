@@ -623,7 +623,7 @@ export default {
     download() {
       const width = this.dimensions.width + this.margins.left + this.margins.right;
       const height = this.dimensions.height + this.margins.top + this.margins.bottom;
-      const blobData = "data:image/svg+xml;base64," + btoa(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${width} ${height}">` + this.svg.html() + '</svg>');
+      const blobData = "data:image/svg+xml;base64," + btoa(`<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 ${width} ${height}" width="${width * 2}" height="${height * 2}">` + this.svg.html() + '</svg>');
       if (this.downloadType == "svg") {
         download(blobData, "volcanoplot.svg")
       } else if (this.downloadType == "png") {
