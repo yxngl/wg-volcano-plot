@@ -193,7 +193,7 @@ export default {
       let yTransform;
       if(this.yTransform === null) yTransform = d => d;
       if (typeof this.yTransform === "undefined") {
-        const nonzeroMin = Math.min(...this.data.map(d => d[this.y]).filter(d => d!==0))
+        const nonzeroMin = Math.min.apply(null, this.data.map(d => d[this.y]).filter(d => d!==0));
         yTransform = function(y) { return -Math.log10(y === 0 ? Math.min(0.0000001, nonzeroMin / 10) : y) }
       }
       this.data.forEach(d => {
