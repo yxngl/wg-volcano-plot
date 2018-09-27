@@ -82,6 +82,7 @@ const STROKE_WIDTH = 1;
  * @param {boolean} [data.options.showLabel] - Options to control if label is shown for each data point.
  * @param {boolean} [data.options.showTooltip] - Options to control if tooltip is shown for each data point.
  * @param {function} [data.options.callback] - A callback function to run when the data point is clicked, which is passed the current datum (d), the current index (i), and the current group (nodes) as specified by D3.
+ * @param {string} [data.id=index] - A optional ID used by D3 for data joining when data is changed.
  * @param {string} x - Key of the input data to plot on X axis
  * @param {string} y - Key of the input data to plot on Y axis
  * @param {string} [xlabel=x] - Label on the X axis
@@ -221,15 +222,9 @@ export default {
         return;
       }
 
-      //Create SVG container
-      const svg = select("#" + this.domId).append("svg")
-        .attr("width", this.dimensions.width + this.margins.left + this.margins.right)
-        .attr("height", this.dimensions.height + this.margins.top + this.margins.bottom)
-      const canvas = svg.append("g")
-        .attr("transform", "translate(" + this.margins.left + "," + this.margins.top + ")");
-      this.svg = svg;
-      this.canvas = canvas;
-
+      const svg = this.svg;
+      const canvas = this.canvas;
+      const content = this.content;
 
       //Axis
       const xScale = scaleLinear()
@@ -245,6 +240,7 @@ export default {
       this.xAxis = axisBottom(xScale);
       this.yAxis = axisLeft(yScale);
 
+      canvas.select("g.x-axis").remove();
       const xax = canvas.append("g")
         .attr("class", "x-axis")
         .attr("transform", "translate(0," + this.dimensions.height + ")")
@@ -259,6 +255,7 @@ export default {
 
       let xPos = xScale(0) > 0 ? xScale(0): 0;
       xPos = xPos < this.dimensions.width ? xPos : this.dimensions.width;
+      canvas.select("g.y-axis").remove();
       const yax = canvas.append("g")
         .attr("class", "y-axis")
         .attr("transform", "translate("+ xPos +  ",0)")
@@ -282,7 +279,9 @@ export default {
           .domain(colorVarRange)
 
         //color legend
-        const legend = svg.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "0%").attr("y1", "100%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
+        svg.select(".legend").remove();
+        const legendWrapper = svg.append("g").attr("class", "legend");
+        const legend = legendWrapper.append("defs").append("svg:linearGradient").attr("id", "gradient").attr("x1", "0%").attr("y1", "100%").attr("x2", "100%").attr("y2", "100%").attr("spreadMethod", "pad");
         legend.append("stop").attr("offset", "0%").attr("stop-color", "#dadaeb").attr("stop-opacity", 1);
         legend.append("stop").attr("offset", "16.67%").attr("stop-color", "#bcbddc").attr("stop-opacity", 1);
         legend.append("stop").attr("offset", "33.33%").attr("stop-color", "#9e9ac8").attr("stop-opacity", 1);
@@ -290,52 +289,48 @@ export default {
         legend.append("stop").attr("offset", "66.67%").attr("stop-color", "#6a51a3").attr("stop-opacity", 1);
         legend.append("stop").attr("offset", "83.33%").attr("stop-color", "#54278f").attr("stop-opacity", 1);
         legend.append("stop").attr("offset", "100%").attr("stop-color", "#3f007d").attr("stop-opacity", 1);
-        svg.append("rect").attr("width", 100).attr("height", 20).style("fill", "url(#gradient)").attr("transform", "translate(10,0)");
+        legendWrapper.append("rect").attr("width", 100).attr("height", 20).style("fill", "url(#gradient)").attr("transform", "translate(10,0)");
         const legendY = scaleLinear().range([0, 100]).domain(colorVarRange);
         const legendYAxis = axisBottom(legendY).ticks(5);
 
-        svg.append("g").attr("class", "y-axis").attr("transform", "translate(10,20)").call(legendYAxis)
+        legendWrapper.append("g").attr("class", "y-axis").attr("transform", "translate(10,20)").call(legendYAxis)
       }
-
-
-      const content = canvas.append("g").attr("class", "content");
-      this.content = content;
 
       this.drawLabel();
 
       //Plot dots
-      content.selectAll(".wg-volcalno-dot")
-        .data(this.processedData)
-          .enter().append("circle")
-            .attr("class", "wg-volcano-dot")
-            .attr("r", d => d.r)
-            .attr("cx", d => xScale(d.x))
-            .attr("cy", d => yScale(d.y))
-            .attr("fill", d => this.getColor(d))
-            //copy and overwrite attribute per data point if available
-            //add event handler
-            .each((d, i, g) => {
-              if (d.hasOwnProperty("attributes") && typeof d.attributes === 'object' && d.attributes.constructor === Object) {
-                for (let key in d.attributes) {
-                  g[i].setAttribute(key, d.attributes[key]);
-                }
-              }
-              const sel = select(g[i]);
-              if (this.showAllTooltips) {
-                  sel.on("mouseenter", showTooltip);
-                  sel.on("mouseleave", hideTooltip);
-              }
-              if (d.hasOwnProperty("options") && typeof d.options === 'object' && d.options.constructor === Object) {
-                if (!this.showAllTooltips && d.options.hasOwnProperty("showTooltip") && d.options.showTooltip) {
-                  sel.on("mouseenter", showTooltip);
-                  sel.on("mouseleave", hideTooltip);
-                }
-                if (d.options.hasOwnProperty("callback") && typeof d.options.callback === "function") {
-                  sel.on("click", d.options.callback);
-                  sel.classed("has-pointer", true);
-                }
-              }
-            })
+      const dots = content.selectAll(".wg-volcano-dot").data(this.processedData, (d, i) => (typeof d.id !== "undefined") ? d.id : i);
+      dots.enter().append("circle")
+        .attr("class", "wg-volcano-dot")
+        .attr("r", d => d.r)
+        .attr("cx", d => xScale(d.x))
+        .attr("cy", d => yScale(d.y))
+        .attr("fill", d => this.getColor(d))
+        //copy and overwrite attribute per data point if available
+        //add event handler
+        .each((d, i, g) => {
+          if (d.hasOwnProperty("attributes") && typeof d.attributes === 'object' && d.attributes.constructor === Object) {
+            for (let key in d.attributes) {
+              g[i].setAttribute(key, d.attributes[key]);
+            }
+          }
+          const sel = select(g[i]);
+          if (this.showAllTooltips) {
+              sel.on("mouseenter", showTooltip);
+              sel.on("mouseleave", hideTooltip);
+          }
+          if (d.hasOwnProperty("options") && typeof d.options === 'object' && d.options.constructor === Object) {
+            if (!this.showAllTooltips && d.options.hasOwnProperty("showTooltip") && d.options.showTooltip) {
+              sel.on("mouseenter", showTooltip);
+              sel.on("mouseleave", hideTooltip);
+            }
+            if (d.options.hasOwnProperty("callback") && typeof d.options.callback === "function") {
+              sel.on("click", d.options.callback);
+              sel.classed("has-pointer", true);
+            }
+          }
+        })
+      dots.exit().remove();
 
 
       const createTooltipContent = d => {
@@ -426,25 +421,29 @@ export default {
         })
 
       //Plot label
-      this.content.selectAll(".dot-label")
-        .data(nodes.labels)
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .enter()
+      const labels = this.content.selectAll(".dot-label")
+        .data(nodes.labels, d => d.id)
+        .call(dragBehavior)
+      labels.enter()
           .append("text")
           .attr("class", "dot-label has-pointer")
           .attr("text-anchor", "middle")
           .attr("font-size", LABEL_SIZE + "rem")
           .text(d => d[this.labelType])
           .attr("fill", "#000")
-          .attr("x", d => d.x)
-          .attr("y", d => d.y)
           .call(dragBehavior)
+      labels.exit().remove();
+      this.content.selectAll(".dot-label")
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .sort((a, b) => a.id < b.id) //needed for the dom to sync with node data to draw lines
+        .each((d, i, g) => {
+          select(g[i]).selectAll("tspan").attr("x", d.x);
+        })
 
       if (this.linkShown) {
         this.drawLinkLine()
       }
-
     },
     placeLabel() {
       //use force simulation to place label automatically
@@ -455,10 +454,12 @@ export default {
         for (let i = 0, label; i < this.processedData.length; i++) {
           //duplicate, keep anchor fixed on dot position, let labels move
           if (this.showAllLabels || (this.processedData[i].hasOwnProperty("options") &&
+              this.processedData[i].options &&
               this.processedData[i].options.hasOwnProperty("showLabel") &&
               this.processedData[i].options.showLabel)) {
+            const id = (typeof this.processedData[i].id !== "undefined") ? this.processedData[i].id : i;
             anchors.push({
-              "id": `data_${i}_anchor`,
+              "id": `data_${id}_anchor`,
               "fx": this.xScale(this.processedData[i].x),
               "fy": this.yScale(this.processedData[i].y),
               "x": this.xScale(this.processedData[i].x),
@@ -466,7 +467,7 @@ export default {
               "r": this.processedData[i].r
             });
 
-            label = {"id": `data_${i}`};
+            label = {"id": `data_${id}`};
             if (Array.isArray(this.labelTypes)) {
               this.labelTypes.forEach(t => label[t] = this.processedData[i][t]);
             } else if (this.labelType !== null) {
@@ -477,8 +478,8 @@ export default {
             labels.push(label);
 
             links.push({
-              "source": `data_${i}_anchor`,
-              "target": `data_${i}`
+              "source": `data_${id}_anchor`,
+              "target": `data_${id}`
             });
           }
         }
@@ -501,6 +502,9 @@ export default {
         }
       }
 
+      anchors.sort((a, b) => a.id < b.id);
+      labels.sort((a, b) => a.id < b.id);
+      links.sort((a, b) => a.id < b.id);
       return this.nodes;
     },
     getLinkCoordinates(textDom, anchor, label) {
@@ -550,11 +554,11 @@ export default {
             .attr("x2", coord.label.x)
             .attr("y2", coord.label.y)
         })
-      this.linkShown = !this.linkShown;
+      if (!this.linkShown) { this.linkShown = true; }
     },
     removeLinkLine() {
       this.svg.selectAll(".link-line").remove();
-      this.linkShown = !this.linkShown;
+      if (this.linkShown) { this.linkShown = false; }
     },
     wrap(text, width) {
       text.each(function() {
@@ -638,13 +642,17 @@ export default {
           download(canvas.toDataURL("image/png"), "volcanoplot.png")
         }
       }
-    }
+    },
   },
   watch: {
     //use watch not updated event,
     //as plot is managed by D3 and data is not directly rendered in template
     data: function() {
-      this.plotVolcano();
+      const dom = document.getElementById(this.domId);
+      if (dom) {
+        this.nodes = { anchors: [], labels: [], links: [] }
+        this.plotVolcano();
+      }
     },
     labelType: function(newlt, oldlt) {
       if (oldlt === null) return;
@@ -653,7 +661,6 @@ export default {
   },
   created: function() {
     this.labelType = Array.isArray(this.labelTypes) ? this.labelTypes[0] : this.labelTypes;
-    //declare no n-reactive variables here
     this.svg = null;  //SVG container: canvas + margins. Legend plots on margin
     this.canvas = null; //Plotting area: Axes, content
     this.content = null; //Includes dots, labels. Zoom on content
@@ -662,9 +669,20 @@ export default {
     this.xAxis = null;
     this.yAxis = null;
     this.colorScale = null;
-    this.nodes = {anchors: [], labels: [], links: []} // Data for plotting labels
+    this.nodes = { anchors: [], labels: [], links: [] } // Data for plotting labels
   },
   mounted: function() {
+    //Create SVG container
+    const svg = select("#" + this.domId).append("svg")
+      .attr("width", this.dimensions.width + this.margins.left + this.margins.right)
+      .attr("height", this.dimensions.height + this.margins.top + this.margins.bottom)
+    const canvas = svg.append("g")
+      .attr("class", "canvas")
+      .attr("transform", "translate(" + this.margins.left + "," + this.margins.top + ")");
+    const content = canvas.append("g").attr("class", "content");
+    this.content = content;
+    this.svg = svg;
+    this.canvas = canvas;
     this.plotVolcano();
   }
 }

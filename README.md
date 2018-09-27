@@ -34,6 +34,7 @@ A component of volcano plot with toolbox of utility functions
         -   `data.options.showLabel` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Options to control if label is shown for each data point.
         -   `data.options.showTooltip` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** Options to control if tooltip is shown for each data point.
         -   `data.options.callback` **[function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)?** A callback function to run when the data point is clicked, which is passed the current datum (d), the current index (i), and the current group (nodes) as specified by D3.
+    -   `data.id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** A optional ID used by D3 for data joining when data is changed. (optional, default `index`)
 -   `x` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Key of the input data to plot on X axis
 -   `y` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Key of the input data to plot on Y axis
 -   `xlabel` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Label on the X axis (optional, default `x`)
