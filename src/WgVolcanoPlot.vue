@@ -408,10 +408,9 @@ export default {
               .attr("x", event.x)
 
           //update link
-          //Use DOM method, rely on link lines and labels are under the same parent and in order.
-          const coord = that.getLinkCoordinates(this, that.nodes.anchors[i], that.nodes.labels[i]);
-          const linkEle = this.parentNode.querySelectorAll(".link-line")[i];
+          const linkEle = document.querySelector(`#${that.domId} .${d.id}_line`);
           if (linkEle) {
+            const coord = that.getLinkCoordinates(this, d);
             linkEle.setAttribute("x1", coord.anchor.x)
             linkEle.setAttribute("y1", coord.anchor.y)
             linkEle.setAttribute("x2", coord.label.x)
@@ -459,7 +458,7 @@ export default {
               this.processedData[i].options.showLabel)) {
             const id = (typeof this.processedData[i].id !== "undefined") ? this.processedData[i].id : i;
             anchors.push({
-              "id": `data_${id}_anchor`,
+              "id": `label_${id}_anchor`,
               "fx": this.xScale(this.processedData[i].x),
               "fy": this.yScale(this.processedData[i].y),
               "x": this.xScale(this.processedData[i].x),
@@ -467,7 +466,7 @@ export default {
               "r": this.processedData[i].r
             });
 
-            label = {"id": `data_${id}`};
+            label = {"id": `label_${id}`};
             if (Array.isArray(this.labelTypes)) {
               this.labelTypes.forEach(t => label[t] = this.processedData[i][t]);
             } else if (this.labelType !== null) {
@@ -478,8 +477,8 @@ export default {
             labels.push(label);
 
             links.push({
-              "source": `data_${id}_anchor`,
-              "target": `data_${id}`
+              "source": `label_${id}_anchor`,
+              "target": `label_${id}`
             });
           }
         }
@@ -502,12 +501,16 @@ export default {
         }
       }
 
-      anchors.sort((a, b) => a.id < b.id);
-      labels.sort((a, b) => a.id < b.id);
-      links.sort((a, b) => a.id < b.id);
       return this.nodes;
     },
-    getLinkCoordinates(textDom, anchor, label) {
+    getLinkCoordinates(textDom, data) {
+      let ids = this.nodes.labels.map(d => d.id);
+      let idx = ids.indexOf(data.id);
+      const label = this.nodes.labels[idx];
+      ids = this.nodes.anchors.map(d => d.id);
+      idx = ids.indexOf(data.id + "_anchor");
+      const anchor = this.nodes.anchors[idx];
+
       let angle = Math.atan((label.y - anchor.y) / (label.x - anchor.x));
       //0.5 to 1.5PI
       angle = label.x > anchor.x ? angle : Math.PI + angle;
@@ -541,10 +544,11 @@ export default {
       this.svg.selectAll(".dot-label")
         .each(function(d, i, g) {
           //this points to DOM element in D3 callback
-          const coord = that.getLinkCoordinates(this, that.nodes.anchors[i], that.nodes.labels[i]);
+          const coord = that.getLinkCoordinates(this, d);
+          const lineId = d.id + "_line";
           select(this.parentNode)
             .append("line")
-            .attr("class", "link-line")
+            .attr("class", "link-line " + lineId)
             .attr("stroke", "gray")
             //zoom data stores in svg, as behavior needs to trigger when zoom on blank
             //Get scale factor from svg, but transform is applied on content
