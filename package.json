@@ -1,6 +1,6 @@
 {
   "name": "wg-volcano-plot",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Vue component and wrapped library of volcano (scatter) plot emphasized on interactivity",
   "main": "dist/wg-volcano-plot.umd.js",
   "scripts": {
